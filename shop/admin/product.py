@@ -13,7 +13,8 @@ from adminsortable2.admin import SortableInlineAdminMixin
 
 from cms.models import Page
 
-from shop.models.related import ProductPageModel, ProductImageModel
+from shop.models.related_page import ProductPageModel
+from shop.models.related_image import ProductImageModel
 
 
 class ProductImageInline(SortableInlineAdminMixin, admin.StackedInline):

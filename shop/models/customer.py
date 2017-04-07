@@ -22,7 +22,7 @@ from django.utils.six import with_metaclass
 from shop import deferred
 from shop.models.fields import JSONField
 from shop.signals import customer_recognized
-from .related import ChoiceEnum
+from shop.models.enums import ChoiceEnum
 
 SessionStore = import_module(settings.SESSION_ENGINE).SessionStore()
 

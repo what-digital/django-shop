@@ -1,14 +1,21 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.conf import settings
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
-from djangocms_text_ckeditor.fields import HTMLField
+
+if 'djangocms_text_ckeditor' in settings.INSTALLED_APPS:
+    from djangocms_text_ckeditor.fields import HTMLField
+else:
+    from django.db.models import TextField as HTMLField
+
 from parler.models import TranslatableModelMixin, TranslatedFieldsModel
 from parler.fields import TranslatedField
 from parler.managers import TranslatableManager, TranslatableQuerySet
 from polymorphic.query import PolymorphicQuerySet
+
 from shop.models.product import BaseProductManager, BaseProduct, CMSPageReferenceMixin
 from shop.models.defaults.mapping import ProductPage, ProductImage
 from ..manufacturer import Manufacturer

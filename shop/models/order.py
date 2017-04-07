@@ -18,7 +18,6 @@ from django.utils.six.moves.urllib.parse import urljoin
 
 from django_fsm import FSMField, transition
 from ipware.ip import get_ip
-from cms.models import Page
 
 from shop import app_settings
 from shop.models.cart import CartItemModel
@@ -104,6 +103,8 @@ class OrderManager(models.Manager):
         """
         Returns the URL of the page with the list view for all orders related to the current customer
         """
+        from cms.models import Page
+
         if not hasattr(self, '_summary_url'):
             try:
                 page = Page.objects.public().get(reverse_id='shop-order')
@@ -118,6 +119,8 @@ class OrderManager(models.Manager):
         Returns the URL of the page with the detail view for the latest order related to the
         current customer. This normally is the thank-you view.
         """
+        from cms.models import Page
+
         try:
             return Page.objects.public().get(reverse_id='shop-order-last').get_absolute_url()
         except Page.DoesNotExist:
