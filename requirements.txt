@@ -1,0 +1,5 @@
+Django==1.11.29
+django-classy-tags==0.3.3
+jsonfield==0.9.6
+django-polymorphic==2.1.2
+django-jsonfield==1.4.0

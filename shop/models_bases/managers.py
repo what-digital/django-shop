@@ -2,7 +2,7 @@
 from django.contrib.auth.models import AnonymousUser
 from django.db import models, transaction
 from django.db.models.aggregates import Count
-from polymorphic.manager import PolymorphicManager
+from polymorphic.managers import PolymorphicManager
 
 from shop.order_signals import processing
 
@@ -90,7 +90,7 @@ class OrderManager(models.Manager):
         order.order_total = cart.total_price
         return order
 
-    @transaction.commit_on_success
+    @transaction.atomic
     def create_from_cart(self, cart, request):
         """
         This creates a new Order object (and all the rest) from a passed Cart
