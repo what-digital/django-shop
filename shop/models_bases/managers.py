@@ -7,9 +7,9 @@ from polymorphic.managers import PolymorphicManager
 from shop.order_signals import processing
 
 
-#==============================================================================
+# ==============================================================================
 # Product
-#==============================================================================
+# ==============================================================================
 
 class ProductStatisticsManager(PolymorphicManager):
     """
@@ -17,7 +17,8 @@ class ProductStatisticsManager(PolymorphicManager):
     other "data-mining" toys.
     """
 
-    def top_selling_products(self, quantity):
+    @staticmethod
+    def top_selling_products(quantity):
         """
         This method "mines" the previously passed orders, and gets a list of
         products (of a size equal to the quantity parameter), ordered by how
@@ -27,10 +28,10 @@ class ProductStatisticsManager(PolymorphicManager):
         from shop.models.ordermodel import OrderItem
         # Get an aggregate of product references and their respective counts
         top_products_data = OrderItem.objects.values(
-                'product').annotate(
-                    product_count=Count('product')
-                ).order_by('product_count'
-            )[:quantity]
+            'product').annotate(
+            product_count=Count('product')
+        ).order_by('product_count'
+                   )[:quantity]
 
         # The top_products_data result should be in the form:
         # [{'product_reference': '<product_id>', 'product_count': <count>}, ..]
@@ -48,13 +49,14 @@ class ProductManager(PolymorphicManager):
     """
     A more classic manager for Product filtering and manipulation.
     """
+
     def active(self):
         return self.filter(active=True)
 
 
-#==============================================================================
+# ==============================================================================
 # Order
-#==============================================================================
+# ==============================================================================
 
 class OrderManager(models.Manager):
 
@@ -127,7 +129,7 @@ class OrderManager(models.Manager):
         for field in cart.extra_price_fields:
             eoi = ExtraOrderPriceField()
             eoi.order = order
-            eoi.label = unicode(field[0])
+            eoi.label = str(field[0]).encode('utf-8')
             eoi.value = field[1]
             if len(field) == 3:
                 eoi.data = field[2]
@@ -152,7 +154,7 @@ class OrderManager(models.Manager):
                 eoi = ExtraOrderItemPriceField()
                 eoi.order_item = order_item
                 # Force unicode, in case it has àö...
-                eoi.label = unicode(field[0])
+                eoi.label = str(field[0]).encode('utf-8')
                 eoi.value = field[1]
                 if len(field) == 3:
                     eoi.data = field[2]

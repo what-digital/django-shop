@@ -1,9 +1,23 @@
 from django.test.testcases import TestCase
 
-from classytags.tests import DummyParser, DummyTokens
+from classytags.utils import TemplateConstant
 
 from ..models.productmodel import Product
 from ..templatetags.shop_tags import Products
+
+
+class DummyTokens(list):
+    def __init__(self, *tokens):
+        super(DummyTokens, self).__init__(['dummy_tag'] + list(tokens))
+
+    def split_contents(self):
+        return self
+
+
+class DummyParser(object):
+    @staticmethod
+    def compile_filter(token):
+        return TemplateConstant(token)
 
 
 class ProductsTestCase(TestCase):

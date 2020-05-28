@@ -10,21 +10,20 @@ from shop.util.fields import CurrencyField
 from shop.util.loader import load_class
 import django
 
-
-#==============================================================================
+# ==============================================================================
 # Extensibility
-#==============================================================================
+# ==============================================================================
 # This overrides the various models with classes loaded from the corresponding
 # setting if it exists.
 
 # Order model
 ORDER_MODEL = getattr(settings, 'SHOP_ORDER_MODEL',
-    'shop.models.defaults.order.Order')
+                      'shop.models.defaults.order.Order')
 Order = load_class(ORDER_MODEL, 'SHOP_ORDER_MODEL')
 
 # Order item model
 ORDERITEM_MODEL = getattr(settings, 'SHOP_ORDERITEM_MODEL',
-    'shop.models.defaults.orderitem.OrderItem')
+                          'shop.models.defaults.orderitem.OrderItem')
 OrderItem = load_class(ORDERITEM_MODEL, 'SHOP_ORDERITEM_MODEL')
 
 
@@ -33,6 +32,7 @@ def clear_products(sender, instance, using, **kwargs):
     for oi in OrderItem.objects.filter(product=instance):
         oi.product = None
         oi.save()
+
 
 if LooseVersion(django.get_version()) < LooseVersion('1.3'):
     pre_delete.connect(clear_products, sender=Product)
@@ -43,7 +43,7 @@ class OrderExtraInfo(models.Model):
     A holder for extra textual information to attach to this order.
     """
     order = models.ForeignKey(Order, related_name="extra_info",
-            verbose_name=_('Order'))
+                              verbose_name=_('Order'))
     text = models.TextField(verbose_name=_('Extra info'), blank=True)
 
     class Meta(object):
@@ -63,7 +63,7 @@ class ExtraOrderPriceField(models.Model):
     data = JSONField(null=True, blank=True, verbose_name=_('Serialized extra data'))
     # Does this represent shipping costs?
     is_shipping = models.BooleanField(default=False, editable=False,
-            verbose_name=_('Is shipping'))
+                                      verbose_name=_('Is shipping'))
 
     class Meta(object):
         app_label = 'shop'
@@ -96,11 +96,11 @@ class OrderPayment(models.Model):
     # How much was paid with this particular transfer
     amount = CurrencyField(verbose_name=_('Amount'))
     transaction_id = models.CharField(max_length=255,
-            verbose_name=_('Transaction ID'),
-            help_text=_("The transaction processor's reference"))
+                                      verbose_name=_('Transaction ID'),
+                                      help_text=_("The transaction processor's reference"))
     payment_method = models.CharField(max_length=255,
-            verbose_name=_('Payment method'),
-            help_text=_("The payment backend used to process the purchase"))
+                                      verbose_name=_('Payment method'),
+                                      help_text=_("The payment backend used to process the purchase"))
 
     class Meta(object):
         app_label = 'shop'

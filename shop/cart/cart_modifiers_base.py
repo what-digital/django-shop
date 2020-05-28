@@ -30,9 +30,9 @@ class BaseCartModifier(object):
        displayed. Any change you make here must be consistent!
     """
 
-    #==========================================================================
+    # ==========================================================================
     # Processing hooks
-    #==========================================================================
+    # ==========================================================================
 
     def pre_process_cart(self, cart, request):
         """
@@ -104,9 +104,9 @@ class BaseCartModifier(object):
             cart.extra_price_fields.append(field)
         return cart
 
-    #==========================================================================
+    # ==========================================================================
     # Simple methods
-    #==========================================================================
+    # ==========================================================================
 
     def get_extra_cart_item_price_field(self, cart_item, request):
         """
@@ -125,11 +125,11 @@ class BaseCartModifier(object):
         override can access that price via ``cart_item.current_total``.
 
         A tax modifier would do something like this:
-        >>> return ('taxes', Decimal(9), {'rate': Decimal(10), 'identifier': 'V.A.T.'})
+        return ('taxes', Decimal(9), {'rate': Decimal(10), 'identifier': 'V.A.T.'})
         Note that the third element in this tuple is optional.
 
         And a rebate modifier would do something along the lines of:
-        >>> return ('rebate', Decimal(-9), {'rate': Decimal(3), 'identifier': 'Discount'})
+        return ('rebate', Decimal(-9), {'rate': Decimal(3), 'identifier': 'Discount'})
         Note that the third element in this tuple is optional.
 
         More examples can be found in shop.cart.modifiers.*
@@ -150,6 +150,6 @@ class BaseCartModifier(object):
         override can access that price via ``cart.current_total``. That is the
         subtotal, updated with all cart modifiers so far)
 
-        >>> return ('Taxes total', 19.00)
+        return ('Taxes total', 19.00)
         """
         return None

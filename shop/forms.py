@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """Forms for the django-shop app."""
 from django import forms
 from django.forms.models import modelformset_factory
@@ -35,7 +35,7 @@ class CartItemModelForm(forms.ModelForm):
 
     class Meta:
         model = CartItem
-        fields = ('quantity', )
+        fields = ('quantity',)
 
     def save(self, *args, **kwargs):
         """
@@ -45,7 +45,7 @@ class CartItemModelForm(forms.ModelForm):
         """
         quantity = self.cleaned_data['quantity']
         instance = self.instance.cart.update_quantity(self.instance.pk,
-                quantity)
+                                                      quantity)
         return instance
 
 
@@ -57,9 +57,9 @@ def get_cart_item_formset(cart_items=None, data=None):
       be the list of updated cart items of the current cart.
     :param data: Optional POST data to be bound to this formset.
     """
-    assert(cart_items is not None)
+    assert (cart_items is not None)
     CartItemFormSet = modelformset_factory(CartItem, form=CartItemModelForm,
-            extra=0)
+                                           extra=0)
     kwargs = {'queryset': cart_items, }
     form_set = CartItemFormSet(data, **kwargs)
 

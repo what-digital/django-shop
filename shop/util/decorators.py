@@ -19,12 +19,16 @@ def on_method(function_decorator):
 
     Credits go to: http://www.toddreed.name/content/django-view-class/
     """
+
     def decorate_method(unbound_method):
         def method_proxy(self, *args, **kwargs):
             def f(*a, **kw):
                 return unbound_method(self, *a, **kw)
+
             return function_decorator(f)(*args, **kwargs)
+
         return method_proxy
+
     return decorate_method
 
 
@@ -44,6 +48,7 @@ def shop_login_required(function=None, redirect_field_name=REDIRECT_FIELD_NAME,
     if function:
         return actual_decorator(function)
     return actual_decorator
+
 
 def order_required(url_name='cart'):
     """
@@ -72,8 +77,11 @@ def order_required(url_name='cart'):
             if order is None or getattr(order, 'status', Order.COMPLETED) >= Order.COMPLETED:
                 return HttpResponseRedirect(reverse(url_name))
             return func(request, *args, **kwargs)
+
         return wraps(func)(inner)
+
     return decorator
+
 
 def cart_required(url_name='cart'):
     """
@@ -101,5 +109,7 @@ def cart_required(url_name='cart'):
             if cart.total_quantity <= 0:
                 return HttpResponseRedirect(reverse(url_name))
             return func(request, *args, **kwargs)
+
         return wraps(func)(inner)
+
     return decorator

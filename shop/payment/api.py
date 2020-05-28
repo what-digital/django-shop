@@ -5,12 +5,13 @@ This file defines the interfaces one should implement when either creating a
 new payment module or willing to use modules with another shop system.
 """
 from decimal import Decimal
-from shop.models import Cart
+from shop.models.cartmodel import Cart
 from shop.models.ordermodel import OrderPayment
 from shop.models.ordermodel import Order
 from shop.shop_api import ShopAPI
 from shop.order_signals import completed
 from django.core.urlresolvers import reverse
+
 
 class PaymentAPI(ShopAPI):
     """
@@ -24,9 +25,9 @@ class PaymentAPI(ShopAPI):
     and ShopShippingAPI(), they are defined in the ShopAPI base class!
     """
 
-    #==========================================================================
+    # ==========================================================================
     # Payment-specific
-    #==========================================================================
+    # ==========================================================================
 
     def confirm_payment(self, order, amount, transaction_id, payment_method,
                         save=True):
@@ -43,7 +44,7 @@ class PaymentAPI(ShopAPI):
             amount=Decimal(amount),
             transaction_id=transaction_id,
             payment_method=payment_method)
-        
+
         if save and self.is_order_paid(order):
             # Set the order status:
             order.status = Order.COMPLETED
@@ -58,10 +59,9 @@ class PaymentAPI(ShopAPI):
 
             completed.send(sender=self, order=order)
 
-
-    #==========================================================================
+    # ==========================================================================
     # URLS
-    #==========================================================================
+    # ==========================================================================
     # Theses simply return URLs to make redirections easier.
     def get_finished_url(self):
         """
@@ -76,7 +76,8 @@ class PaymentAPI(ShopAPI):
         """
         return reverse('thank_you_for_your_order')
 
-    def get_cancel_url(self):
+    @staticmethod
+    def get_cancel_url():
         """
         A helper for backends to let them redirect to a generic "order was
         cancelled" URL of their choosing.

@@ -1,2 +1,2 @@
 # flake8: noqa
-from client import *
+from . import client

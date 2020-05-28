@@ -8,8 +8,8 @@ from django.http import HttpResponseRedirect
 from django.views.generic import RedirectView
 
 from shop.forms import BillingShippingForm
-from shop.models import AddressModel, OrderExtraInfo
-from shop.models import Order
+from shop.models import AddressModel
+from shop.models.ordermodel import Order, OrderExtraInfo
 from shop.util.address import (
     assign_address_to_request,
     get_billing_address_from_request,
@@ -24,7 +24,8 @@ from shop.util.login_mixin import LoginMixin
 class CheckoutSelectionView(LoginMixin, ShopTemplateView):
     template_name = 'shop/checkout/selection.html'
 
-    def _get_dynamic_form_class_from_factory(self):
+    @staticmethod
+    def _get_dynamic_form_class_from_factory():
         """
         Returns a dynamic ModelForm from the loaded AddressModel
         """
@@ -83,7 +84,7 @@ class CheckoutSelectionView(LoginMixin, ShopTemplateView):
             shipping_address = get_shipping_address_from_request(self.request)
             if self.request.method == "POST":
                 form = form_class(self.request.POST, prefix="ship",
-                    instance=shipping_address)
+                                  instance=shipping_address)
             else:
                 # We should either have an instance, or None
                 if not shipping_address:
@@ -115,7 +116,7 @@ class CheckoutSelectionView(LoginMixin, ShopTemplateView):
             billing_address = get_billing_address_from_request(self.request)
             if self.request.method == "POST":
                 form = form_class(self.request.POST, prefix="bill",
-                    instance=billing_address)
+                                  instance=billing_address)
             else:
                 # We should either have an instance, or None
                 if not billing_address:
@@ -124,7 +125,7 @@ class CheckoutSelectionView(LoginMixin, ShopTemplateView):
                     # default value for the form.
                     billing_address = AddressModel()
 
-                #Instanciate the form
+                # Instanciate the form
                 form = form_class(instance=billing_address, prefix="bill")
             setattr(self, '_billing_form', form)
         return form
@@ -142,7 +143,8 @@ class CheckoutSelectionView(LoginMixin, ShopTemplateView):
             self._billingshipping_form = form
         return form
 
-    def save_addresses_to_order(self, order, shipping_address,
+    @staticmethod
+    def save_addresses_to_order(order, shipping_address,
                                 billing_address):
         """
         Provided for extensibility.
@@ -170,7 +172,8 @@ class CheckoutSelectionView(LoginMixin, ShopTemplateView):
             setattr(self, '_extra_info_form', form)
         return form
 
-    def save_extra_info_to_order(self, order, form):
+    @staticmethod
+    def save_extra_info_to_order(order, form):
         if form.cleaned_data.get('text'):
             extra_info = form.save(commit=False)
             extra_info.order = order
@@ -189,15 +192,15 @@ class CheckoutSelectionView(LoginMixin, ShopTemplateView):
             order = self.create_order_object_from_cart()
 
             self.save_addresses_to_order(order, shipping_address,
-                billing_address)
+                                         billing_address)
 
             # The following marks addresses as being default addresses for
             # shipping and billing. For more options (amazon style), we should
             # remove this
             assign_address_to_request(self.request, shipping_address,
-                shipping=True)
+                                      shipping=True)
             assign_address_to_request(self.request, billing_address,
-                shipping=False)
+                                      shipping=False)
 
             billingshipping_form = \
                 self.get_billing_and_shipping_selection_form()
@@ -249,6 +252,7 @@ class OrderConfirmView(RedirectView):
     def get_redirect_url(self, **kwargs):
         self.url = reverse(self.url_name)
         return super(OrderConfirmView, self).get_redirect_url(**kwargs)
+
 
 class ThankYouView(LoginMixin, ShopTemplateView):
     template_name = 'shop/checkout/thank_you.html'

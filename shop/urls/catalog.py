@@ -1,11 +1,11 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 
 from shop.views import ShopListView
 from shop.views.product import ProductDetailView
 from shop.models.productmodel import Product
 
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^$',
         ShopListView.as_view(model=Product),
         name='product_list'
@@ -14,4 +14,4 @@ urlpatterns = patterns('',
         ProductDetailView.as_view(),
         name='product_detail'
         ),
-    )
+    ]

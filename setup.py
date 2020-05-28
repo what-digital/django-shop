@@ -26,10 +26,12 @@ setup(
     classifiers=CLASSIFIERS,
     install_requires=[
         'Django>=1.11.29',
-        'django-classy-tags>=0.3.3',
+        'django-classy-tags>=1.0.0',
         'django-polymorphic>=2.1.2',
         'django-jsonfield==1.4.0',
-        'jsonfield>=0.9.6'
+        'pytz==2020.01',
+        'jsonfield>=0.9.6',
+        'future==0.18.2'
     ],
     packages=find_packages(exclude=["example", "example.*"]),
     include_package_data=True,

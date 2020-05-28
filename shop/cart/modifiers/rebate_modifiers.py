@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from decimal import Decimal
 from shop.cart.cart_modifiers_base import BaseCartModifier
 
@@ -12,7 +12,7 @@ class BulkRebateModifier(BaseCartModifier):
         This serves as an example mass rebate modifier: if you buy more than
         5 items of the same kind, you get 10% off the bunch
 
-        >>> cart_item.extra_price_fields.update({'Rebate': Decimal('10.0')})
+        cart_item.extra_price_fields.update({'Rebate': Decimal('10.0')})
         """
         REBATE_PERCENTAGE = Decimal('10')
         NUMBER_OF_ITEMS_TO_TRIGGER_REBATE = 5

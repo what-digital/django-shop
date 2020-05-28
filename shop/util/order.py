@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from django.contrib.auth.models import AnonymousUser
 from shop.models.ordermodel import Order
 

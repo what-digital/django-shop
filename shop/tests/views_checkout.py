@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from decimal import Decimal
 from django.conf import settings
 
@@ -7,7 +7,7 @@ from django.core.urlresolvers import reverse
 from django.test.testcases import TestCase
 
 from shop.addressmodel.models import Country, Address
-from shop.models import Product
+from shop.models.productmodel import Product
 from shop.models.cartmodel import Cart
 from shop.models.ordermodel import Order
 from shop.order_signals import processing
@@ -61,7 +61,7 @@ class ShippingBillingViewTestCase(TestCase):
         setattr(self.request, 'user', self.user)
 
         address = Address.objects.create(country=self.country,
-            user_shipping=self.user)
+                                         user_shipping=self.user)
         address.save()
 
         view = CheckoutSelectionView(request=self.request)
@@ -95,16 +95,16 @@ class ShippingBillingViewTestCase(TestCase):
         setattr(self.request, 'user', self.user)
 
         address = Address.objects.create(country=self.country,
-            user_billing=self.user)
+                                         user_billing=self.user)
         address.save()
 
         view = CheckoutSelectionView(request=self.request)
         res = view.get_billing_address_form()
         self.assertEqual(res.instance, address)
 
-    #==========================================================================
+    # ==========================================================================
     # Billing and shipping form
-    #==========================================================================
+    # ==========================================================================
     def test_billing_and_shipping_selection_post(self):
         setattr(self.request, 'method', 'POST')
         setattr(self.request, 'POST', {})
@@ -123,9 +123,9 @@ class ShippingBillingViewTestCase(TestCase):
         res2 = view.get_billing_and_shipping_selection_form()
         self.assertEqual(res, res2)
 
-    #==========================================================================
+    # ==========================================================================
     # Context Data
-    #==========================================================================
+    # ==========================================================================
     def test_get_context_data(self):
         setattr(self.request, 'method', 'GET')
         view = CheckoutSelectionView(request=self.request)
@@ -135,9 +135,9 @@ class ShippingBillingViewTestCase(TestCase):
         self.assertNotEqual(ctx['billing_address'], None)
         self.assertNotEqual(ctx['billing_shipping_form'], None)
 
-    #==========================================================================
+    # ==========================================================================
     # Login Mixin
-    #==========================================================================
+    # ==========================================================================
     def test_must_be_logged_in_if_setting_is_true(self):
         with SettingsOverride(SHOP_FORCE_LOGIN=True):
             # force creating of session
@@ -154,9 +154,9 @@ class ShippingBillingViewTestCase(TestCase):
             self.assertEqual(resp.status_code, 302)
             self.assertTrue('accounts/login/' in resp._headers['location'][1])
 
-    #==========================================================================
+    # ==========================================================================
     # Cart Required Decorator
-    #==========================================================================
+    # ==========================================================================
     def test_cart_required_redirects_on_checkout(self):
         resp = self.client.get(reverse('checkout_selection'))
         self.assertEqual(resp.status_code, 302)
@@ -251,13 +251,14 @@ class CheckoutCartToOrderTestCase(TestCase):
         # order pk 1 should be deleted here
         self.cart.add_product(self.product)
         new_order = view.create_order_object_from_cart()
-        self.assertFalse(Order.objects.filter(pk=old_order.pk).exists()) # check it was deleted
+        self.assertFalse(Order.objects.filter(pk=old_order.pk).exists())  # check it was deleted
         self.assertNotEqual(old_order.order_total, new_order.order_total)
 
     def test_processing_signal(self):
         view = CheckoutSelectionView(request=self.request)
 
         order_from_signal = []
+
         def receiver(sender, order=None, **kwargs):
             order_from_signal.append(order)
 

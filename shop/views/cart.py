@@ -26,7 +26,7 @@ class CartItemDetail(ShopView):
         """
         if not self.action:
             return super(CartItemDetail, self).dispatch(request, *args,
-                **kwargs)
+                                                        **kwargs)
         if self.action in self.http_method_names:
             handler = getattr(self, self.action, self.http_method_not_allowed)
         else:
@@ -162,7 +162,7 @@ class CartDetails(ShopTemplateResponseMixin, CartItemDetail):
         context = self.get_context_data(**kwargs)
         try:
             formset = get_cart_item_formset(cart_items=context['cart_items'],
-                    data=self.request.POST)
+                                            data=self.request.POST)
         except ValidationError:
             return redirect('cart')
         if formset.is_valid():

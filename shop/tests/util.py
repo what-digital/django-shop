@@ -1,8 +1,8 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import sys
 from decimal import Decimal
 from django.conf import settings
-from django.db.models.loading import cache
+from django.apps import apps as cache
 from django.contrib.auth.models import User, AnonymousUser
 from django.core.exceptions import ImproperlyConfigured
 from django.test.testcases import TestCase
@@ -17,17 +17,18 @@ from shop.util.loader import load_class
 
 
 class Mock(object):
-        pass
+    pass
 
 
 class CurrencyFieldTestCase(TestCase):
     """
     Tests the currency field defined in the util package
     """
+
     def test_01_currencyfield_has_fixed_format(self):
         cf = CurrencyField(max_digits=2, decimal_places=10)
         number = cf.format_number(99.99)
-        #number should *not* end up having only one decimal place
+        # number should *not* end up having only one decimal place
         self.assertEqual(Decimal(number), Decimal('99.99'))
 
     def test_02_currencyfield_has_default(self):
@@ -176,22 +177,22 @@ class ModelImportTestCase(TestCase):
     def test_bases_old_import_path(self):
         try:
             module = __import__('shop.models.defaults.bases', globals(),
-                locals(), ['BaseProduct',])
+                                locals(), ['BaseProduct', ])
         except ImportError:
             module = False
 
         self.assertTrue(hasattr(module, 'BaseProduct'),
-            'Model bases could not be imported from old location!')
+                        'Model bases could not be imported from old location!')
 
     def test_managers_old_import_path(self):
         try:
             module = __import__('shop.models.defaults.managers', globals(),
-                locals(), ['ProductManager',])
+                                locals(), ['ProductManager', ])
         except ImportError:
             module = False
 
         self.assertTrue(hasattr(module, 'ProductManager'),
-            'Model managers could not be imported from old location!')
+                        'Model managers could not be imported from old location!')
 
 
 class CircularImportTestCase(TestCase):
@@ -231,13 +232,13 @@ class CircularImportTestCase(TestCase):
 
     def test_old_import_raises_exception(self):
         self.setup_app('circular_import_old',
-            'circular_import_old.models.MyProduct')
+                       'circular_import_old.models.MyProduct')
         self.assertRaises(ImproperlyConfigured, cache.load_app,
-            'circular_import_old')
+                          'circular_import_old')
 
     def test_new_import_doesnot_raise_exception(self):
         self.setup_app('circular_import_new',
-            'circular_import_new.models.MyProduct')
+                       'circular_import_new.models.MyProduct')
         try:
             app = cache.load_app('circular_import_new')
         except ImproperlyConfigured:
@@ -261,9 +262,9 @@ class AddressUtilTestCase(TestCase):
         setattr(self.request, 'user', None)
         setattr(self.request, 'session', {})
 
-    #==========================================================================
+    # ==========================================================================
     # Shipping
-    #==========================================================================
+    # ==========================================================================
     def test_get_shipping_address_from_request_no_preset(self):
         # Set the user
         setattr(self.request, 'user', self.user)
@@ -281,9 +282,9 @@ class AddressUtilTestCase(TestCase):
         res = get_shipping_address_from_request(self.request)
         self.assertEqual(res, self.address)
 
-    #==========================================================================
+    # ==========================================================================
     # Billing
-    #==========================================================================
+    # ==========================================================================
     def test_get_billing_address_from_request_no_preset(self):
         # Set the user
         setattr(self.request, 'user', self.user)

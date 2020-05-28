@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from django.conf import settings
 from shop.payment.api import PaymentAPI
 from shop.shipping.api import ShippingAPI
@@ -71,7 +71,7 @@ class BackendsPool(object):
         if not url_namespace:
             raise NotImplementedError(
                 'Please set a namespace for backend "%s"' %
-                    backend_instance.backend_name)
+                backend_instance.backend_name)
 
     def _load_backends_list(self, setting_name, shop_object):
         """ This actually loads the backends from disk"""

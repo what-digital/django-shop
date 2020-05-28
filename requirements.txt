@@ -1,5 +1,7 @@
 Django==1.11.29
-django-classy-tags==0.3.3
+django-classy-tags==1.0.0
 jsonfield==0.9.6
 django-polymorphic==2.1.2
 django-jsonfield==1.4.0
+pytz==2020.01
+future==0.18.2

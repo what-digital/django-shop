@@ -1,11 +1,12 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from django.contrib import admin
 from django.contrib.admin.options import ModelAdmin
 from shop.addressmodel.models import Country, Address
 
-#class ClientAdmin(ModelAdmin):
+
+# class ClientAdmin(ModelAdmin):
 #    pass
-#admin.site.register(Client, ClientAdmin)
+# admin.site.register(Client, ClientAdmin)
 
 
 class CountryAdmin(ModelAdmin):

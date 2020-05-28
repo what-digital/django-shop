@@ -9,7 +9,7 @@ from decimal import Decimal
 class ShopApiTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.create(username="test",
-            email="test@example.com")
+                                        email="test@example.com")
 
         self.request = Mock()
         setattr(self.request, 'user', None)

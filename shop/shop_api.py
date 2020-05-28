@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from shop.models.ordermodel import OrderExtraInfo, Order
 from shop.util.order import get_order_from_request
 
@@ -23,48 +23,58 @@ class ShopAPI(object):
     them in BaseShippingBackend and BasePaymentBackend, future implementers
     thank you :)
     """
-    def get_order(self, request):
+
+    @staticmethod
+    def get_order(request):
         """
         Returns the order object for the current shopper.
 
         This is called from the backend's views as:
-        >>> order = self.shop.getOrder(request)
+        order = self.shop.getOrder(request)
         """
         # it might seem a bit strange to simply forward the call to a helper,
         # but this avoids exposing the shop's internal workings to module
         # writers
         return get_order_from_request(request)
 
-    def add_extra_info(self, order, text):
+    @staticmethod
+    def add_extra_info(order, text):
         """
         Add an extra info text field to the order
         """
         OrderExtraInfo.objects.create(text=text, order=order)
 
-    def is_order_paid(self, order):
+    @staticmethod
+    def is_order_paid(order):
         """Whether the passed order is fully paid or not."""
         return order.is_paid()
-    is_order_payed = is_order_paid #Backward compatability, deprecated spelling
 
-    def is_order_completed(self, order):
+    is_order_payed = is_order_paid  # Backward compatability, deprecated spelling
+
+    @staticmethod
+    def is_order_completed(order):
         return order.is_completed()
 
-    def get_order_total(self, order):
+    @staticmethod
+    def get_order_total(order):
         """The total amount to be charged for passed order"""
         return order.order_total
 
-    def get_order_subtotal(self, order):
+    @staticmethod
+    def get_order_subtotal(order):
         """The total amount to be charged for passed order"""
         return order.order_subtotal
 
-    def get_order_short_name(self, order):
+    @staticmethod
+    def get_order_short_name(order):
         """
         A short name for the order, to be displayed on the payment processor's
         website. Should be human-readable, as much as possible
         """
         return order.short_name
 
-    def get_order_unique_id(self, order):
+    @staticmethod
+    def get_order_unique_id(order):
         """
         A unique identifier for this order. This should be our shop's reference
         number. This is sent back by the payment processor when confirming
@@ -72,11 +82,12 @@ class ShopAPI(object):
         """
         return order.pk
 
-    def get_order_for_id(self, id):
+    @staticmethod
+    def get_order_for_id(pkid):
         """
         Get an order for a given ID. Typically, this would be used when the
         backend receives notification from the transaction processor (i.e.
         paypal ipn), with an attached "invoice ID" or "order ID", which should
         then be used to get the shop's order with this method.
         """
-        return Order.objects.get(pk=id)
+        return Order.objects.get(pk=pkid)

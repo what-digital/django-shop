@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from django import forms
 
 
@@ -14,12 +14,12 @@ class LocalizeDecimalFieldsForm(forms.ModelForm):
 
 
 class LocalizeDecimalFieldsMixin(object):
-    '''
+    """
     To be used as a mixin for classes derived from admin.ModelAdmin,
     admin.TabularInline, etc. which localizes the input fields for models
     of type DecimalField in the admin interface.
     If your class derived from ModelAdmin wants to override the form attribute,
     make sure that this form is derived from LocalizeDecimalFieldsForm and not
     from forms.ModelForm.
-    '''
+    """
     form = LocalizeDecimalFieldsForm

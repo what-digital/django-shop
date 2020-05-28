@@ -17,7 +17,8 @@ class ShippingAPI(ShopAPI):
     Methods defined in BaseBackendAPI:
     getOrder(request): Return the Order object for the current shopper
     """
-    def add_shipping_costs(self, order, label, value):
+    @staticmethod
+    def add_shipping_costs(order, label, value):
         """
         Add shipping costs to the given order, with the given label (text), and
         for the given value.

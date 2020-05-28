@@ -2,6 +2,7 @@
 from shop.models.cartmodel import Cart
 from django.contrib.auth.models import AnonymousUser
 
+
 def get_cart_from_database(request):
     database_cart = Cart.objects.filter(user=request.user)
     if database_cart:
@@ -9,6 +10,7 @@ def get_cart_from_database(request):
     else:
         database_cart = None
     return database_cart
+
 
 def get_cart_from_session(request):
     session_cart = None
@@ -22,6 +24,7 @@ def get_cart_from_session(request):
                 session_cart = None
     return session_cart
 
+
 def get_or_create_cart(request, save=False):
     """
     Return cart for current visitor.
@@ -33,7 +36,7 @@ def get_or_create_cart(request, save=False):
 
     If ``save`` is True, cart object will be explicitly saved.
     """
-    cart = None
+
     if not hasattr(request, '_cart'):
         is_logged_in = request.user and not isinstance(request.user, AnonymousUser)
 

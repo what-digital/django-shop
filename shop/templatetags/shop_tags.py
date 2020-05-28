@@ -10,7 +10,6 @@ from shop.models.productmodel import Product
 
 from django.conf import settings
 
-
 register = template.Library()
 
 
@@ -20,13 +19,15 @@ class Cart(InclusionTag):
     """
     template = 'shop/templatetags/_cart.html'
 
-    def get_context(self, context):
+    def get_context(self, context, **kwargs):
         request = context['request']
         cart = get_or_create_cart(request)
         cart.update(request)
         return {
             'cart': cart
         }
+
+
 register.tag(Cart)
 
 
@@ -37,12 +38,14 @@ class Order(InclusionTag):
     template = 'shop/templatetags/_order.html'
     options = Options(
         Argument('order', resolve=True),
-        )
+    )
 
     def get_context(self, context, order):
         return {
             'order': order
         }
+
+
 register.tag(Order)
 
 
@@ -60,11 +63,16 @@ class Products(InclusionTag):
             objects = Product.objects.filter(active=True)
         context.update({'products': objects, })
         return context
+
+
 register.tag(Products)
+
 
 def priceformat(price):
     FORMAT = getattr(settings, 'SHOP_PRICE_FORMAT', '%0.2f')
     if not price and price != 0:
         return ''
     return FORMAT % price
+
+
 register.filter(priceformat)

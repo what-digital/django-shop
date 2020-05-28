@@ -7,6 +7,7 @@ from django.db import models
 from django.db.models.aggregates import Sum
 from django.utils.translation import ugettext_lazy as _
 from polymorphic.models import PolymorphicModel
+
 from shop.cart.modifiers_pool import cart_modifiers_pool
 from shop.util.fields import CurrencyField
 from shop.util.loader import get_model_string
@@ -14,9 +15,10 @@ import django
 
 USER_MODEL = getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
 
-#==============================================================================
+
+# ==============================================================================
 # Product
-#==============================================================================
+# ==============================================================================
 class BaseProduct(PolymorphicModel):
     """
     A basic product for the shop
@@ -28,9 +30,9 @@ class BaseProduct(PolymorphicModel):
     slug = models.SlugField(verbose_name=_('Slug'), unique=True)
     active = models.BooleanField(default=False, verbose_name=_('Active'))
     date_added = models.DateTimeField(auto_now_add=True,
-        verbose_name=_('Date added'))
+                                      verbose_name=_('Date added'))
     last_modified = models.DateTimeField(auto_now=True,
-        verbose_name=_('Last modified'))
+                                         verbose_name=_('Last modified'))
     unit_price = CurrencyField(verbose_name=_('Unit price'))
 
     class Meta(object):
@@ -61,16 +63,16 @@ class BaseProduct(PolymorphicModel):
         """
         Return product reference of this Product (provided for extensibility).
         """
-        return unicode(self.pk)
+        return str(self.pk).encode('utf-8')
 
     @property
     def can_be_added_to_cart(self):
         return self.active
 
 
-#==============================================================================
+# ==============================================================================
 # Carts
-#==============================================================================
+# ==============================================================================
 class BaseCart(models.Model):
     """
     This should be a rather simple list of items. Ideally it should be bound to
@@ -120,20 +122,20 @@ class BaseCart(models.Model):
         user chose for this request.
 
         Example with merge = True:
-        >>> self.items[0] = CartItem.objects.create(..., product=MyProduct())
-        >>> self.add_product(MyProduct())
-        >>> self.items[0].quantity
+        self.items[0] = CartItem.objects.create(..., product=MyProduct())
+        self.add_product(MyProduct())
+        self.items[0].quantity
         2
 
         Example with merge=False:
-        >>> self.items[0] = CartItem.objects.create(..., product=MyProduct())
-        >>> self.add_product(MyProduct())
-        >>> self.items[0].quantity
+        self.items[0] = CartItem.objects.create(..., product=MyProduct())
+        self.add_product(MyProduct())
+        self.items[0].quantity
         1
-        >>> self.items[1].quantity
+        self.items[1].quantity
         1
         """
-        from shop.models import CartItem
+        from shop.models.cartmodel import CartItem
 
         # check if product can be added at all
         if not getattr(product, 'can_be_added_to_cart', True):
@@ -163,7 +165,7 @@ class BaseCart(models.Model):
         Updates the quantity for given cart item or deletes it if its quantity
         reaches `0`
         """
-        cart_item = self.items.get(pk=cart_item_id)
+        cart_item = self.objects.get(pk=cart_item_id)
         if quantity == 0:
             cart_item.delete()
         else:
@@ -178,7 +180,7 @@ class BaseCart(models.Model):
         allows to implicitely check for "access rights" since we insure the
         cartitem is actually in the user's cart
         """
-        cart_item = self.items.get(pk=cart_item_id)
+        cart_item = self.objects.get(pk=cart_item_id)
         cart_item.delete()
         self.save()
 
@@ -188,7 +190,7 @@ class BaseCart(models.Model):
         cart modifiers have been processed for all cart items.
         """
         assert self._updated_cart_items is not None, ('Cart needs to be '
-            'updated before calling get_updated_cart_items.')
+                                                      'updated before calling get_updated_cart_items.')
         return self._updated_cart_items
 
     def update(self, request):
@@ -206,7 +208,8 @@ class BaseCart(models.Model):
         that for the order items (since they are legally binding after the
         "purchase" button was pressed)
         """
-        from shop.models import CartItem, Product
+        from shop.models.cartmodel import CartItem
+        from shop.models.productmodel import Product
 
         # This is a ghetto "select_related" for polymorphic models.
         items = CartItem.objects.filter(cart=self)
@@ -255,7 +258,7 @@ class BaseCart(models.Model):
         Remove all cart items
         """
         if self.pk:
-            self.items.all().delete()
+            self.objects.all().delete()
             self.delete()
 
     @property
@@ -263,7 +266,7 @@ class BaseCart(models.Model):
         """
         Returns the total quantity of all items in the cart
         """
-        return sum([ci.quantity for ci in self.items.all()])
+        return sum([ci.quantity for ci in self.objects.all()])
 
 
 class BaseCartItem(models.Model):
@@ -308,9 +311,9 @@ class BaseCartItem(models.Model):
         return self.line_total
 
 
-#==============================================================================
+# ==============================================================================
 # Orders
-#==============================================================================
+# ==============================================================================
 class BaseOrder(models.Model):
     """
     A model representing an Order.
@@ -342,19 +345,19 @@ class BaseOrder(models.Model):
 
     # If the user is null, the order was created with a session
     user = models.ForeignKey(USER_MODEL, blank=True, null=True,
-            verbose_name=_('User'))
+                             verbose_name=_('User'))
     status = models.IntegerField(choices=STATUS_CODES, default=PROCESSING,
-            verbose_name=_('Status'))
+                                 verbose_name=_('Status'))
     order_subtotal = CurrencyField(verbose_name=_('Order subtotal'))
     order_total = CurrencyField(verbose_name=_('Order Total'))
     shipping_address_text = models.TextField(_('Shipping address'), blank=True,
-        null=True)
+                                             null=True)
     billing_address_text = models.TextField(_('Billing address'), blank=True,
-        null=True)
+                                            null=True)
     created = models.DateTimeField(auto_now_add=True,
-            verbose_name=_('Created'))
+                                   verbose_name=_('Created'))
     modified = models.DateTimeField(auto_now=True,
-            verbose_name=_('Updated'))
+                                    verbose_name=_('Updated'))
     cart_pk = models.PositiveIntegerField(_('Cart primary key'), blank=True, null=True)
 
     class Meta(object):
@@ -372,7 +375,8 @@ class BaseOrder(models.Model):
     def is_paid(self):
         """Has this order been integrally paid for?"""
         return self.amount_paid >= self.order_total
-    is_payed = is_paid #Backward compatability, deprecated spelling
+
+    is_payed = is_paid  # Backward compatability, deprecated spelling
 
     def is_completed(self):
         return self.status == self.COMPLETED
@@ -385,21 +389,22 @@ class BaseOrder(models.Model):
         """
         The amount paid is the sum of related orderpayments
         """
-        from shop.models import OrderPayment
+        from shop.models.ordermodel import OrderPayment
         sum_ = OrderPayment.objects.filter(order=self).aggregate(
-                sum=Sum('amount'))
+            sum=Sum('amount'))
         result = sum_.get('sum')
         if result is None:
             result = Decimal(0)
         return result
-    amount_payed = amount_paid #Backward compatability, deprecated spelling
+
+    amount_payed = amount_paid  # Backward compatability, deprecated spelling
 
     @property
     def shipping_costs(self):
-        from shop.models import ExtraOrderPriceField
+        from shop.models.ordermodel import ExtraOrderPriceField
         sum_ = Decimal('0.0')
         cost_list = ExtraOrderPriceField.objects.filter(order=self).filter(
-                is_shipping=True)
+            is_shipping=True)
         for cost in cost_list:
             sum_ += cost.value
         return sum_
@@ -450,13 +455,13 @@ class BaseOrderItem(models.Model):
     """
 
     order = models.ForeignKey(get_model_string('Order'), related_name='items',
-            verbose_name=_('Order'))
+                              verbose_name=_('Order'))
     product_reference = models.CharField(max_length=255,
-            verbose_name=_('Product reference'))
+                                         verbose_name=_('Product reference'))
     product_name = models.CharField(max_length=255, null=True, blank=True,
-            verbose_name=_('Product name'))
+                                    verbose_name=_('Product name'))
     product = models.ForeignKey(get_model_string('Product'),
-        verbose_name=_('Product'), null=True, blank=True, **f_kwargs)
+                                verbose_name=_('Product'), null=True, blank=True, **f_kwargs)
     unit_price = CurrencyField(verbose_name=_('Unit price'))
     quantity = models.IntegerField(verbose_name=_('Quantity'))
     line_subtotal = CurrencyField(verbose_name=_('Line subtotal'))

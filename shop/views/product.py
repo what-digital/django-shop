@@ -16,6 +16,6 @@ class ProductDetailView(ShopDetailView):
 
     def get_template_names(self):
         ret = super(ProductDetailView, self).get_template_names()
-        if not self.generic_template in ret:
+        if self.generic_template not in ret:
             ret.append(self.generic_template)
         return ret

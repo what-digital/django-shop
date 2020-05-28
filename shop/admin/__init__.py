@@ -1,2 +1,2 @@
 # flake8: noqa
-import orderadmin
+from . import orderadmin
