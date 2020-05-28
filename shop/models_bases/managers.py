@@ -129,7 +129,7 @@ class OrderManager(models.Manager):
         for field in cart.extra_price_fields:
             eoi = ExtraOrderPriceField()
             eoi.order = order
-            eoi.label = str(field[0]).encode('utf-8')
+            eoi.label = str(field[0])
             eoi.value = field[1]
             if len(field) == 3:
                 eoi.data = field[2]
@@ -154,7 +154,7 @@ class OrderManager(models.Manager):
                 eoi = ExtraOrderItemPriceField()
                 eoi.order_item = order_item
                 # Force unicode, in case it has àö...
-                eoi.label = str(field[0]).encode('utf-8')
+                eoi.label = str(field[0])
                 eoi.value = field[1]
                 if len(field) == 3:
                     eoi.data = field[2]

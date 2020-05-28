@@ -63,7 +63,7 @@ class BaseProduct(PolymorphicModel):
         """
         Return product reference of this Product (provided for extensibility).
         """
-        return str(self.pk).encode('utf-8')
+        return str(self.pk)
 
     @property
     def can_be_added_to_cart(self):
