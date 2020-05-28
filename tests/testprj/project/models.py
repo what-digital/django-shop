@@ -19,7 +19,7 @@ class BaseProduct(models.Model):
 
 
 class ProductVariation(Product):
-    baseproduct = models.ForeignKey(BaseProduct)
+    baseproduct = models.ForeignKey(BaseProduct, on_delete=models.CASCADE)
 
     def get_price(self):
         return self.baseproduct.unit_price

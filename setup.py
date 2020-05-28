@@ -25,7 +25,7 @@ setup(
     platforms=['OS Independent'],
     classifiers=CLASSIFIERS,
     install_requires=[
-        'Django>=1.11.29',
+        'Django>=2.2.12',
         'django-classy-tags>=1.0.0',
         'django-polymorphic>=2.1.2',
         'django-jsonfield==1.4.0',

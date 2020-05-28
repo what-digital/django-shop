@@ -35,9 +35,9 @@ class Country(models.Model):
 
 class Address(models.Model):
     user_shipping = models.OneToOneField(USER_MODEL, related_name='shipping_address',
-                                         blank=True, null=True)
+                                         blank=True, null=True, on_delete=models.CASCADE)
     user_billing = models.OneToOneField(USER_MODEL, related_name='billing_address',
-                                        blank=True, null=True)
+                                        blank=True, null=True, on_delete=models.CASCADE)
 
     name = models.CharField(_('Name'), max_length=255)
     address = models.CharField(_('Address'), max_length=255)
@@ -46,7 +46,7 @@ class Address(models.Model):
     city = models.CharField(_('City'), max_length=20)
     state = models.CharField(_('State'), max_length=255)
     country = models.ForeignKey(Country, verbose_name=_('Country'), blank=True,
-                                null=True)
+                                null=True, on_delete=models.CASCADE)
 
     class Meta(object):
         verbose_name = _('Address')

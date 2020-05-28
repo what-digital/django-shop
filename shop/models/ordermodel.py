@@ -43,7 +43,7 @@ class OrderExtraInfo(models.Model):
     A holder for extra textual information to attach to this order.
     """
     order = models.ForeignKey(Order, related_name="extra_info",
-                              verbose_name=_('Order'))
+                              verbose_name=_('Order'), on_delete=models.CASCADE)
     text = models.TextField(verbose_name=_('Extra info'), blank=True)
 
     class Meta(object):
@@ -57,7 +57,7 @@ class ExtraOrderPriceField(models.Model):
     This will make Cart-provided extra price fields persistent since we want
     to "snapshot" their statuses at the time when the order was made
     """
-    order = models.ForeignKey(Order, verbose_name=_('Order'))
+    order = models.ForeignKey(Order, verbose_name=_('Order'), on_delete=models.CASCADE)
     label = models.CharField(max_length=255, verbose_name=_('Label'))
     value = CurrencyField(verbose_name=_('Amount'))
     data = JSONField(null=True, blank=True, verbose_name=_('Serialized extra data'))
@@ -76,7 +76,7 @@ class ExtraOrderItemPriceField(models.Model):
     This will make Cart-provided extra price fields persistent since we want
     to "snapshot" their statuses at the time when the order was made
     """
-    order_item = models.ForeignKey(OrderItem, verbose_name=_('Order item'))
+    order_item = models.ForeignKey(OrderItem, verbose_name=_('Order item'), on_delete=models.CASCADE)
     label = models.CharField(max_length=255, verbose_name=_('Label'))
     value = CurrencyField(verbose_name=_('Amount'))
     data = JSONField(null=True, blank=True, verbose_name=_('Serialized extra data'))
@@ -92,7 +92,7 @@ class OrderPayment(models.Model):
     A class to hold basic payment information. Backends should define their own
     more complex payment types should they need to store more informtion
     """
-    order = models.ForeignKey(Order, verbose_name=_('Order'))
+    order = models.ForeignKey(Order, verbose_name=_('Order'), on_delete=models.CASCADE)
     # How much was paid with this particular transfer
     amount = CurrencyField(verbose_name=_('Amount'))
     transaction_id = models.CharField(max_length=255,

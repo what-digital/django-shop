@@ -17,6 +17,20 @@ class CurrencyField(DecimalField):
         defaults.update(kwargs)
         super(CurrencyField, self).__init__(**defaults)
 
+    def format_number(self, value):
+        """
+        Formats a number into a string with the requisite number of digits and
+        decimal places.
+        """
+        # Method moved to django.db.backends.utils.
+        #
+        # It is preserved because it is used by the oracle backend
+        # (django.db.backends.oracle.query), and also for
+        # backwards-compatibility with any external code which may have used
+        # this method.
+        from django.utils import numberformat
+        return numberformat.format(value, '.')
+
     # def south_field_triple(self):  # pragma: no cover
     #     """
     #     Returns a suitable description of this field for South.

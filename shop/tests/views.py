@@ -2,7 +2,7 @@
 from decimal import Decimal
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from django.test.testcases import TestCase
 from shop.models.cartmodel import Cart, CartItem
@@ -226,11 +226,11 @@ class OrderListViewTestCase(TestCase):
         url = reverse('order_list')
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, unicode(self.order))
+        self.assertContains(response, str(self.order))
 
     def test_authenticated_user_see_order_detail(self):
         self.client.login(username='test', password='test')
         url = reverse('order_detail', kwargs={'pk': self.order.pk})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, unicode(self.order))
+        self.assertContains(response, str(self.order))

@@ -2,7 +2,7 @@
 """
 This models the checkout process using views.
 """
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.forms import models as model_forms
 from django.http import HttpResponseRedirect
 from django.views.generic import RedirectView

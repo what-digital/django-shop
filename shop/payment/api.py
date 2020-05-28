@@ -10,7 +10,7 @@ from shop.models.ordermodel import OrderPayment
 from shop.models.ordermodel import Order
 from shop.shop_api import ShopAPI
 from shop.order_signals import completed
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 
 class PaymentAPI(ShopAPI):
