@@ -165,7 +165,9 @@ class BaseCart(models.Model):
         Updates the quantity for given cart item or deletes it if its quantity
         reaches `0`
         """
-        cart_item = self.objects.get(pk=cart_item_id)
+        from shop.models.cartmodel import CartItem
+
+        cart_item = CartItem.objects.get(pk=cart_item_id)
         if quantity == 0:
             cart_item.delete()
         else:
@@ -180,7 +182,9 @@ class BaseCart(models.Model):
         allows to implicitely check for "access rights" since we insure the
         cartitem is actually in the user's cart
         """
-        cart_item = self.objects.get(pk=cart_item_id)
+        from shop.models.cartmodel import CartItem
+
+        cart_item = CartItem.objects.get(pk=cart_item_id)
         cart_item.delete()
         self.save()
 
@@ -258,7 +262,11 @@ class BaseCart(models.Model):
         Remove all cart items
         """
         if self.pk:
-            self.objects.all().delete()
+            from shop.models.cartmodel import CartItem
+
+            # CartItem.objects.all().delete()
+            for ci in CartItem.objects.filter(cart=self):
+                ci.delete()
             self.delete()
 
     @property
@@ -266,7 +274,9 @@ class BaseCart(models.Model):
         """
         Returns the total quantity of all items in the cart
         """
-        return sum([ci.quantity for ci in self.objects.all()])
+        from shop.models.cartmodel import CartItem
+
+        return sum([ci.quantity for ci in CartItem.objects.filter(cart=self)])
 
 
 class BaseCartItem(models.Model):

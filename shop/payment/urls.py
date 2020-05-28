@@ -15,7 +15,5 @@ urlpatterns = []
 # in its get_urls() method.
 for backend in backends_pool.get_payment_backends_list():
     regexp = '^%s/' % backend.url_namespace
-    urls = backend.get_urls()
-    pattern = [url(regexp, include(backend.get_urls()))]
 
-    urlpatterns.extend(pattern)
+    urlpatterns.append(url(regexp, include(backend.get_urls())))
