@@ -70,6 +70,9 @@ class ExtraOrderPriceField(models.Model):
         verbose_name = _('Extra order price field')
         verbose_name_plural = _('Extra order price fields')
 
+    def __str__(self):
+        return "Extra order price {} for order {}".format(self.pk, self.order)
+
 
 class ExtraOrderItemPriceField(models.Model):
     """

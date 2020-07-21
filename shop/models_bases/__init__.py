@@ -488,3 +488,6 @@ class BaseOrderItem(models.Model):
         if not self.product_name and self.product:
             self.product_name = self.product.get_name()
         super(BaseOrderItem, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return "Order Item {} for order {}".format(self.pk, self.order)
